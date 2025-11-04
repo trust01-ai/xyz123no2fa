@@ -277,7 +277,7 @@
 
                         // Update the URL with the encoded value
                         const baseUrl = currentUrl.split('?')[0];
-                        const newUrl = baseUrl + '?encoded=' + encodedValue;
+                        const newUrl = baseUrl + '?enc=' + encodedValue;
                         window.history.replaceState(null, '', newUrl);
 
                         return encodedValue;
